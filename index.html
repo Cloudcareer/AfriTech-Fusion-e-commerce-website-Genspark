@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfriTech Fusion - Premium Tech, Fashion & Beauty</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6B46C1;
+            --secondary-color: #F9A826;
+            --text-light: #F7FAFC;
+            --text-dark: #2D3748;
+            --background-light: #F7FAFC;
+            --background-dark: #1A202C;
+            --accent-color: #F56565;
+            --success-color: #48BB78;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            scroll-behavior: smooth;
+        }
+
+        .light-mode {
+            --text-color: var(--text-dark);
+            --background-color: var(--background-light);
+            color: var(--text-dark);
+            background-color: var(--background-light);
+        }
+
+        .dark-mode {
+            --text-color: var(--text-light);
+            --background-color: var(--background-dark);
+            color: var(--text-light);
+            background-color: var(--background-dark);
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: var(--primary-color);
+        }
+        
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: var(--primary-color);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .product-slider {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-slide {
+            display: none;
+            width: 100%;
+        }
+
+        .product-slide.active {
+            display: block;
+        }
+
+        .slide-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .slide-prev {
+            left: 10px;
+        }
+
+        .slide-next {
+            right: 10px;
+        }
+
+        .review-card {
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #5A3DB1;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #E89921;
+            transform: translateY(-2px);
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--background-light);
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+        }
+
+        .dark-mode .modal-content {
+            background-color: var(--background-dark);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .language-selector {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--background-light);
+            border-radius: 5px;
+            padding: 5px 0;
+            min-width: 80px;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .language-dropdown {
+            background-color: var(--background-dark);
+        }
+
+        .language-option {
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+
+        .language-option:hover {
+            background-color: rgba(107, 70, 193, 0.1);
+        }
+
+        .show {
+            display: block;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 60vh;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .desktop-menu {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-btn, .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white shadow-md dark:bg-gray-800 transition-colors duration-300">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <img src="https://static.vecteezy.com/system/resources/previews/005/522/735/non_2x/modern-shape-bird-fly-falcon-logo-symbol-icon-graphic-design-illustration-idea-creative-vector.jpg" alt="AfriTech Fusion Logo" class="w-10 h-10">
+                    <span class="text-xl font-bold text-gray-800 dark:text-white" data-lang-en="AfriTech Fusion" data-lang-fr="AfriTech Fusion">AfriTech Fusion</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <nav class="desktop-menu hidden md:flex items-center space-x-8">
+                    <a href="#home" class="font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors" data-lang-en="Home" data-lang-fr="Accueil">Home</a>
+                    <a href="#products" class="font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors" data-lang-en="Products" data-lang-fr="Produits">Products</a>
+                    <a href="#reviews" class="font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors" data-lang-en="Reviews" data-lang-fr="Avis">Reviews</a>
+                    <a href="#contact" class="font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors" data-lang-en="Contact" data-lang-fr="Contact">Contact</a>
+                </nav>
+                
+                <!-- Right section -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <div class="language-selector flex items-center">
+                        <span class="text-sm font-medium mr-2" data-lang-en="EN" data-lang-fr="FR">EN</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                        <div class="language-dropdown shadow-lg">
+                            <div class="language-option" data-lang="en">English</div>
+                            <div class="language-option" data-lang="fr">Français</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <div class="flex items-center">
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                            <input type="checkbox" id="toggle-theme" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="toggle-theme" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                        <span id="theme-icon" class="fas fa-moon"></span>
+                    </div>
+                    
+                    <!-- Cart Icon -->
+                    <div class="cart-icon cursor-pointer" id="cart-icon">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <div class="cart-count">0</div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <nav class="mobile-menu hidden mt-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                <a href="#home" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-lang-en="Home" data-lang-fr="Accueil">Home</a>
+                <a href="#products" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-lang-en="Products" data-lang-fr="Produits">Products</a>
+                <a href="#reviews" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-lang-en="Reviews" data-lang-fr="Avis">Reviews</a>
+                <a href="#contact" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-lang-en="Contact" data-lang-fr="Contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-slider">
+            <div class="hero-slide active" style="background-image: url('https://media.voguebusiness.com/photos/5f7b39951e98d80ae15647bf/2:3/w_2560%2Cc_limit/african-e-commerce-voguebus-ulrich-knoblauch_industrie-africa-oct-20-story.jpg')"></div>
+            <div class="hero-slide" style="background-image: url('https://formulabotanica.com/wp-content/uploads/2021/04/2021-06-Top-10-African-Skincare-Ingredients.png')"></div>
+            <div class="hero-slide" style="background-image: url('https://lifehacker.com/imagery/articles/01HF2HCAY7QXRMXVNGQSJZ6PG9/hero-image.fill.size_1248x702.v1699836035.png')"></div>
+        </div>
+        <div class="hero-content">
+            <div class="mx-auto max-w-3xl text-center fade-in">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white shadow-text" data-lang-en="African Innovation, Global Excellence" data-lang-fr="Innovation Africaine, Excellence Mondiale">African Innovation, Global Excellence</h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-100" data-lang-en="Premium tech, fashion & beauty products" data-lang-fr="Produits premium de technologie, mode et beauté">Premium tech, fashion & beauty products</p>
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center">
+                    <a href="#products" class="btn-primary px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg transform transition" data-lang-en="Shop Now" data-lang-fr="Acheter">Shop Now</a>
+                    <a href="#contact" class="btn-secondary px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg transform transition" data-lang-en="Contact Us" data-lang-fr="Contactez-nous">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12" data-lang-en="Browse Categories" data-lang-fr="Parcourir les Catégories">Browse Categories</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Gadgets Category -->
+                <div class="category-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105">
+                    <img src="https://payflex.co.za/wp-content/uploads/2024/12/Cool-online-gadget-stores-in-South-Africa-02.png" alt="Gadgets" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2" data-lang-en="Gadgets" data-lang-fr="Gadgets">Gadgets</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4" data-lang-en="Innovative gadgets for everyday use" data-lang-fr="Des gadgets innovants pour un usage quotidien">Innovative gadgets for everyday use</p>
+                        <a href="#gadgets" class="inline-block text-purple-600 dark:text-purple-400 font-medium hover:underline">
+                            <span data-lang-en="Explore" data-lang-fr="Explorer">Explore</span> <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Tech Category -->
+                <div class="category-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105">
+                    <img src="https://thegadgetflow.com/wp-content/uploads/2021/06/laptop-1200x675.jpg" alt="Tech" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2" data-lang-en="Tech" data-lang-fr="Technologie">Tech</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4" data-lang-en="Latest technology for modern lifestyles" data-lang-fr="Dernières technologies pour modes de vie modernes">Latest technology for modern lifestyles</p>
+                        <a href="#tech" class="inline-block text-purple-600 dark:text-purple-400 font-medium hover:underline">
+                            <span data-lang-en="Explore" data-lang-fr="Explorer">Explore</span> <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Clothing Category -->
+                <div class="category-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105">
+                    <img src="https://media.voguebusiness.com/photos/5f7b398c1e98d80ae15647b7/master/w_1600%2Cc_limit/african-e-commerce-voguebus-nyosi-oct-20-story-inline-1.jpg" alt="Clothing" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2" data-lang-en="Clothing" data-lang-fr="Vêtements">Clothing</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4" data-lang-en="Stylish African-inspired fashion" data-lang-fr="Mode élégante d'inspiration africaine">Stylish African-inspired fashion</p>
+                        <a href="#clothing" class="inline-block text-purple-600 dark:text-purple-400 font-medium hover:underline">
+                            <span data-lang-en="Explore" data-lang-fr="Explorer">Explore</span> <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Lotions Category -->
+                <div class="category-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105">
+                    <img src="https://formulabotanica.com/wp-content/uploads/2021/06/1-1-1200x675.png" alt="Lotions" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2" data-lang-en="Lotions" data-lang-fr="Lotions">Lotions</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4" data-lang-en="Natural, African skincare products" data-lang-fr="Produits de soins naturels africains">Natural, African skincare products</p>
+                        <a href="#lotions" class="inline-block text-purple-600 dark:text-purple-400 font-medium hover:underline">
+                            <span data-lang-en="Explore" data-lang-fr="Explorer">Explore</span> <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12" data-lang-en="Our Premium Products" data-lang-fr="Nos Produits Premium">Our Premium Products</h2>
+            
+            <!-- Gadgets -->
+            <div id="gadgets" class="mb-20">
+                <h3 class="text-2xl font-semibold mb-8 pl-4 border-l-4 border-purple-600" data-lang-en="Gadgets" data-lang-fr="Gadgets">Gadgets</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Gadget 1 - with slider -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="product-slider">
+                            <img src="https://payflex.co.za/wp-content/uploads/2024/12/Cool-online-gadget-stores-in-South-Africa-02.png" alt="Smart Watch Pro" class="product-slide active w-full h-56 object-cover">
+                            <img src="https://www.giz.de/static/en/images/contentimages_320x305px/GIZ_Thomas%20Imo__rdax_782x559s.JPG" alt="Smart Watch Pro - Alternative view" class="product-slide w-full h-56 object-cover">
+                            <div class="slide-control slide-prev"><i class="fas fa-chevron-left"></i></div>
+                            <div class="slide-control slide-next"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Smart Watch Pro" data-lang-fr="Smart Watch Pro">Smart Watch Pro</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R1,499</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Fitness tracking, notifications & heart rate monitoring" data-lang-fr="Suivi de fitness, notifications et surveillance du rythme cardiaque">Fitness tracking, notifications & heart rate monitoring</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="gadget1" data-price="1499" data-name="Smart Watch Pro" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gadget 2 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.csm.tech/storage/uploads/images/9523Africa's-Rising-E-Commerce2%20(1).jpg" alt="Wireless Earbuds" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Wireless Earbuds" data-lang-fr="Écouteurs Sans Fil">Wireless Earbuds</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R899</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="HD sound quality with active noise cancellation" data-lang-fr="Qualité sonore HD avec annulation active du bruit">HD sound quality with active noise cancellation</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="gadget2" data-price="899" data-name="Wireless Earbuds" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gadget 3 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.africanleadershipmagazine.co.uk/wp-content/uploads/2024/06/Ecommerce.jpg" alt="Smart Home Hub" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Smart Home Hub" data-lang-fr="Hub Maison Intelligente">Smart Home Hub</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R1,899</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Control your entire home with voice commands" data-lang-fr="Contrôlez toute votre maison avec des commandes vocales">Control your entire home with voice commands</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="gadget3" data-price="1899" data-name="Smart Home Hub" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gadget 4 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://blog.nuovopay.com/wp-content/uploads/2024/11/Smartphones_-Gateway-to-Finance-in-Africa-1-1024x538.jpg" alt="Portable Bluetooth Speaker" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Portable Bluetooth Speaker" data-lang-fr="Enceinte Bluetooth Portable">Portable Bluetooth Speaker</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R749</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Waterproof with 20-hour battery life" data-lang-fr="Étanche avec 20 heures d'autonomie">Waterproof with 20-hour battery life</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="gadget4" data-price="749" data-name="Portable Bluetooth Speaker" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tech -->
+            <div id="tech" class="mb-20">
+                <h3 class="text-2xl font-semibold mb-8 pl-4 border-l-4 border-purple-600" data-lang-en="Tech" data-lang-fr="Technologie">Tech</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Tech 1 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://lifehacker.com/imagery/articles/01HF2HCAY7QXRMXVNGQSJZ6PG9/hero-image.fill.size_1248x702.v1699836035.png" alt="Ultra-thin Laptop" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Ultra-thin Laptop" data-lang-fr="Ordinateur Portable Ultra-fin">Ultra-thin Laptop</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R12,999</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Powerful, lightweight with all-day battery" data-lang-fr="Puissant, léger avec batterie longue durée">Powerful, lightweight with all-day battery</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="tech1" data-price="12999" data-name="Ultra-thin Laptop" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tech 2 - with slider -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="product-slider">
+                            <img src="https://thegadgetflow.com/wp-content/uploads/2021/06/laptop-1200x675.jpg" alt="4K Smart TV" class="product-slide active w-full h-56 object-cover">
+                            <img src="https://thegadgetflow.com/wp-content/uploads/2021/06/useful-laptop-gadgets-040.jpeg" alt="4K Smart TV - Alternative view" class="product-slide w-full h-56 object-cover">
+                            <div class="slide-control slide-prev"><i class="fas fa-chevron-left"></i></div>
+                            <div class="slide-control slide-next"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="4K Smart TV" data-lang-fr="Smart TV 4K">4K Smart TV</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R8,499</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Crystal clear picture quality with smart features" data-lang-fr="Qualité d'image cristalline avec fonctionnalités intelligentes">Crystal clear picture quality with smart features</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="tech2" data-price="8499" data-name="4K Smart TV" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tech 3 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://hips.hearstapps.com/hmg-prod/images/laptop-gear-64416315bba57.jpg" alt="Wireless Charging Pad" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Wireless Charging Pad" data-lang-fr="Chargeur Sans Fil">Wireless Charging Pad</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R599</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Fast charging for all compatible devices" data-lang-fr="Charge rapide pour tous les appareils compatibles">Fast charging for all compatible devices</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="tech3" data-price="599" data-name="Wireless Charging Pad" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tech 4 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.yankodesign.com/images/design_news/2021/03/laptop-accessories-ds/HybridDrive_gives_you_ports_and_storage_layout-1.jpg" alt="Portable SSD Drive" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Portable SSD Drive" data-lang-fr="Disque SSD Portable">Portable SSD Drive</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R1,299</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="1TB ultra-fast storage in your pocket" data-lang-fr="Stockage ultra-rapide de 1 To dans votre poche">1TB ultra-fast storage in your pocket</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="tech4" data-price="1299" data-name="Portable SSD Drive" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Clothing -->
+            <div id="clothing" class="mb-20">
+                <h3 class="text-2xl font-semibold mb-8 pl-4 border-l-4 border-purple-600" data-lang-en="Clothing" data-lang-fr="Vêtements">Clothing</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Clothing 1 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://media.voguebusiness.com/photos/5f7b39951e98d80ae15647bf/2:3/w_2560%2Cc_limit/african-e-commerce-voguebus-ulrich-knoblauch_industrie-africa-oct-20-story.jpg" alt="African Print Shirt" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="African Print Shirt" data-lang-fr="Chemise à Motif Africain">African Print Shirt</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R699</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Vibrant, authentic African prints on premium cotton" data-lang-fr="Imprimés africains authentiques et vibrants sur coton premium">Vibrant, authentic African prints on premium cotton</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="clothing1" data-price="699" data-name="African Print Shirt" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clothing 2 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://c76c7bbc41.mjedge.net/wp-content/uploads/tc/2021/12/African-Fashion-Umaizi-1024x651.jpg" alt="Designer Denim Jacket" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Designer Denim Jacket" data-lang-fr="Veste en Jean Designer">Designer Denim Jacket</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R1,299</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Modern cut with African-inspired details" data-lang-fr="Coupe moderne avec détails d'inspiration africaine">Modern cut with African-inspired details</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="clothing2" data-price="1299" data-name="Designer Denim Jacket" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clothing 3 - with slider -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="product-slider">
+                            <img src="https://media.voguebusiness.com/photos/5f7b398c1e98d80ae15647b7/master/w_1600%2Cc_limit/african-e-commerce-voguebus-nyosi-oct-20-story-inline-1.jpg" alt="Modern Dashiki Dress" class="product-slide active w-full h-56 object-cover">
+                            <img src="https://kipfashion.com/wp-content/uploads/2023/04/African-clothing-online-store-to-look-out-for-in-2023.jpg" alt="Modern Dashiki Dress - Alternative view" class="product-slide w-full h-56 object-cover">
+                            <div class="slide-control slide-prev"><i class="fas fa-chevron-left"></i></div>
+                            <div class="slide-control slide-next"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Modern Dashiki Dress" data-lang-fr="Robe Dashiki Moderne">Modern Dashiki Dress</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R899</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Contemporary take on traditional designs" data-lang-fr="Conception contemporaine sur des modèles traditionnels">Contemporary take on traditional designs</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="clothing3" data-price="899" data-name="Modern Dashiki Dress" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clothing 4 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.africanclothing.us/wp-content/uploads/2022/01/african-clothing-marketplace.jpg" alt="Handmade Leather Sandals" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Handmade Leather Sandals" data-lang-fr="Sandales en Cuir Artisanales">Handmade Leather Sandals</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R599</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Crafted by skilled South African artisans" data-lang-fr="Fabriqué par des artisans sud-africains qualifiés">Crafted by skilled South African artisans</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="clothing4" data-price="599" data-name="Handmade Leather Sandals" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lotions -->
+            <div id="lotions" class="mb-20">
+                <h3 class="text-2xl font-semibold mb-8 pl-4 border-l-4 border-purple-600" data-lang-en="Lotions" data-lang-fr="Lotions">Lotions</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Lotion 1 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://m.media-amazon.com/images/I/71+5mX2g2nL._AC_UF1000,1000_QL80_.jpg" alt="African Black Soap Lotion" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="African Black Soap Lotion" data-lang-fr="Lotion au Savon Noir Africain">African Black Soap Lotion</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R249</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Healing and nourishing for all skin types" data-lang-fr="Guérison et nourrissant pour tous les types de peau">Healing and nourishing for all skin types</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="lotion1" data-price="249" data-name="African Black Soap Lotion" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lotion 2 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://m.media-amazon.com/images/I/61P5rMjgEYL._AC_UF1000,1000_QL80_.jpg" alt="Shea Butter Moisturizer" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Shea Butter Moisturizer" data-lang-fr="Hydratant au Beurre de Karité">Shea Butter Moisturizer</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R189</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Rich, creamy formula for deep hydration" data-lang-fr="Formule riche et crémeuse pour une hydratation profonde">Rich, creamy formula for deep hydration</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="lotion2" data-price="189" data-name="Shea Butter Moisturizer" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lotion 3 -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://formulabotanica.com/wp-content/uploads/2021/04/2021-06-Top-10-African-Skincare-Ingredients.png" alt="Marula Oil Serum" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Marula Oil Serum" data-lang-fr="Sérum à l'Huile de Marula">Marula Oil Serum</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R349</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Anti-aging miracle oil from African marula trees" data-lang-fr="Huile miracle anti-âge des marulas africains">Anti-aging miracle oil from African marula trees</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="lotion3" data-price="349" data-name="Marula Oil Serum" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lotion 4 - with slider -->
+                    <div class="product-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="product-slider">
+                            <img src="https://www.goodsalonguide.com/sites/default/files/the_natural_africa_body1.jpg" alt="Baobab & Honey Body Butter" class="product-slide active w-full h-56 object-cover">
+                            <img src="https://m.media-amazon.com/images/I/713hSOufRPL._AC_UF1000,1000_QL80_.jpg" alt="Baobab & Honey Body Butter - Alternative view" class="product-slide w-full h-56 object-cover">
+                            <div class="slide-control slide-prev"><i class="fas fa-chevron-left"></i></div>
+                            <div class="slide-control slide-next"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold mb-2" data-lang-en="Baobab & Honey Body Butter" data-lang-fr="Beurre Corporel au Baobab et Miel">Baobab & Honey Body Butter</h3>
+                                <span class="text-purple-600 dark:text-purple-400 font-bold">R279</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4" data-lang-en="Ultra-rich moisturizer for dry, damaged skin" data-lang-fr="Hydratant ultra-riche pour peaux sèches et abîmées">Ultra-rich moisturizer for dry, damaged skin</p>
+                            <button class="add-to-cart w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300" data-id="lotion4" data-price="279" data-name="Baobab & Honey Body Butter" data-lang-en="Add to Cart" data-lang-fr="Ajouter au Panier">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12" data-lang-en="What Our Customers Say" data-lang-fr="Ce Que Disent Nos Clients">What Our Customers Say</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Review 1 - Bongani -->
+                <div class="review-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-200 overflow-hidden flex-shrink-0">
+                            <!-- Using a placeholder image since we don't have specific profile photos -->
+                            <img src="https://static.vecteezy.com/system/resources/previews/005/520/695/non_2x/modern-shape-bird-eagle-or-falcon-hipster-logo-symbol-icon-graphic-design-illustration-idea-creative-vector.jpg" alt="Bongani" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Bongani</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm italic" data-lang-en="I've been shopping from AfriTech Fusion for over a year now. The quality of their tech products is outstanding, and the customer service is always friendly and helpful. The African-inspired design elements make my gadgets stand out!" data-lang-fr="Je fais mes achats chez AfriTech Fusion depuis plus d'un an maintenant. La qualité de leurs produits technologiques est exceptionnelle, et le service client est toujours amical et serviable. Les éléments de design inspirés de l'Afrique font ressortir mes gadgets !">I've been shopping from AfriTech Fusion for over a year now. The quality of their tech products is outstanding, and the customer service is always friendly and helpful. The African-inspired design elements make my gadgets stand out!</p>
+                </div>
+                
+                <!-- Review 2 - Sandra -->
+                <div class="review-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-200 overflow-hidden flex-shrink-0">
+                            <!-- Using a placeholder image -->
+                            <img src="https://formulabotanica.com/wp-content/uploads/2021/06/1-1-1200x675.png" alt="Sandra" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Sandra</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm italic" data-lang-en="The skincare products from AfriTech Fusion have transformed my routine! The Marula Oil Serum has made my skin so much more radiant and healthy. Plus, I love supporting a South African business that showcases our natural ingredients." data-lang-fr="Les produits de soins de la peau d'AfriTech Fusion ont transformé ma routine ! Le sérum à l'huile de Marula a rendu ma peau beaucoup plus radieuse et saine. De plus, j'adore soutenir une entreprise sud-africaine qui met en valeur nos ingrédients naturels.">The skincare products from AfriTech Fusion have transformed my routine! The Marula Oil Serum has made my skin so much more radiant and healthy. Plus, I love supporting a South African business that showcases our natural ingredients.</p>
+                </div>
+                
+                <!-- Review 3 - Khumalo -->
+                <div class="review-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-200 overflow-hidden flex-shrink-0">
+                            <!-- Using a placeholder image -->
+                            <img src="https://t3.ftcdn.net/jpg/03/24/58/36/360_F_324583697_euQvOegpGNvBfMD4ijQE9zgwJvFT0dqU.jpg" alt="Khumalo" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Khumalo</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm italic" data-lang-en="The African Print Shirt I bought is now my favorite piece of clothing. The fabric quality is exceptional and the fit is perfect. I get compliments every time I wear it. Fast delivery and excellent packaging too!" data-lang-fr="La chemise à motifs africains que j'ai achetée est maintenant mon vêtement préféré. La qualité du tissu est exceptionnelle et la coupe est parfaite. Je reçois des compliments chaque fois que je la porte. Livraison rapide et excellent emballage également !">The African Print Shirt I bought is now my favorite piece of clothing. The fabric quality is exceptional and the fit is perfect. I get compliments every time I wear it. Fast delivery and excellent packaging too!</p>
+                </div>
+                
+                <!-- Review 4 - Phina -->
+                <div class="review-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-200 overflow-hidden flex-shrink-0">
+                            <!-- Using a placeholder image -->
+                            <img src="https://c8.alamy.com/comp/2JB4CTH/minimalist-modern-bird-fly-falcon-logo-design-vector-graphic-symbol-icon-illustration-creative-idea-2JB4CTH.jpg" alt="Phina" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Phina</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm italic" data-lang-en="AfriTech Fusion is my go-to for everything tech and beauty. The Smart Watch Pro has helped me track my fitness goals, and their Baobab Body Butter keeps my skin moisturized all day. The website is super easy to navigate, and delivery is always on time!" data-lang-fr="AfriTech Fusion est ma référence pour tout ce qui concerne la technologie et la beauté. La Smart Watch Pro m'a aidé à suivre mes objectifs de fitness, et leur beurre corporel au baobab garde ma peau hydratée toute la journée. Le site Web est super facile à naviguer, et la livraison est toujours à l'heure !">AfriTech Fusion is my go-to for everything tech and beauty. The Smart Watch Pro has helped me track my fitness goals, and their Baobab Body Butter keeps my skin moisturized all day. The website is super easy to navigate, and delivery is always on time!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="py-16 bg-purple-700 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4" data-lang-en="Join Our Newsletter" data-lang-fr="Rejoignez Notre Newsletter">Join Our Newsletter</h2>
+            <p class="text-purple-200 mb-8 max-w-2xl mx-auto" data-lang-en="Stay updated with our latest products, exclusive offers and African tech innovations" data-lang-fr="Restez informé de nos derniers produits, offres exclusives et innovations technologiques africaines">Stay updated with our latest products, exclusive offers and African tech innovations</p>
+            
+            <form class="max-w-lg mx-auto flex flex-col md:flex-row gap-4">
+                <input type="email" placeholder="Your email address" class="flex-1 px-4 py-3 rounded-lg focus:outline-none text-gray-800" required>
+                <button type="submit" class="btn-secondary px-6 py-3 rounded-lg font-medium" data-lang-en="Subscribe" data-lang-fr="S'abonner">Subscribe</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12" data-lang-en="Contact Us" data-lang-fr="Contactez-nous">Contact Us</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Contact Info -->
+                <div>
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-semibold mb-4" data-lang-en="Get In Touch" data-lang-fr="Entrer en Contact">Get In Touch</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6" data-lang-en="Have questions about our products or need assistance with your order? Contact us and our team will be happy to help!" data-lang-fr="Vous avez des questions sur nos produits ou besoin d'aide pour votre commande ? Contactez-nous et notre équipe se fera un plaisir de vous aider !">Have questions about our products or need assistance with your order? Contact us and our team will be happy to help!</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-phone text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1" data-lang-en="Phone" data-lang-fr="Téléphone">Phone</h4>
+                                <p class="text-gray-600 dark:text-gray-300">+27 65 845 6336</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1" data-lang-en="Email" data-lang-fr="Email">Email</h4>
+                                <p class="text-gray-600 dark:text-gray-300">mdsolutions008@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-map-marker-alt text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1" data-lang-en="Location" data-lang-fr="Emplacement">Location</h4>
+                                <p class="text-gray-600 dark:text-gray-300" data-lang-en="Cape Town, South Africa" data-lang-fr="Le Cap, Afrique du Sud">Cape Town, South Africa</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mr-4">
+                                <i class="fas fa-clock text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium mb-1" data-lang-en="Business Hours" data-lang-fr="Heures d'Ouverture">Business Hours</h4>
+                                <p class="text-gray-600 dark:text-gray-300" data-lang-en="Mon - Fri: 9AM - 6PM" data-lang-fr="Lun - Ven: 9h - 18h">Mon - Fri: 9AM - 6PM</p>
+                                <p class="text-gray-600 dark:text-gray-300" data-lang-en="Sat: 10AM - 4PM" data-lang-fr="Sam: 10h - 16h">Sat: 10AM - 4PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-medium mb-3" data-lang-en="Follow Us" data-lang-fr="Suivez-nous">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-purple-100 dark:bg-purple-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
+                                <i class="fab fa-facebook-f text-purple-600 dark:text-purple-400"></i>
+                            </a>
+                            <a href="#" class="bg-purple-100 dark:bg-purple-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
+                                <i class="fab fa-instagram text-purple-600 dark:text-purple-400"></i>
+                            </a>
+                            <a href="#" class="bg-purple-100 dark:bg-purple-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
+                                <i class="fab fa-twitter text-purple-600 dark:text-purple-400"></i>
+                            </a>
+                            <a href="#" class="bg-purple-100 dark:bg-purple-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
+                                <i class="fab fa-linkedin-in text-purple-600 dark:text-purple-400"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div>
+                    <form class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium mb-2" data-lang-en="Your Name" data-lang-fr="Votre Nom">Your Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium mb-2" data-lang-en="Your Email" data-lang-fr="Votre Email">Your Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="subject" class="block text-sm font-medium mb-2" data-lang-en="Subject" data-lang-fr="Sujet">Subject</label>
+                            <input type="text" id="subject" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium mb-2" data-lang-en="Your Message" data-lang-fr="Votre Message">Your Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary w-full py-3 rounded-lg font-medium text-white" data-lang-en="Send Message" data-lang-fr="Envoyer le Message">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://static.vecteezy.com/system/resources/previews/005/522/735/non_2x/modern-shape-bird-fly-falcon-logo-symbol-icon-graphic-design-illustration-idea-creative-vector.jpg" alt="AfriTech Fusion Logo" class="w-10 h-10">
+                        <span class="text-xl font-bold">AfriTech Fusion</span>
+                    </div>
+                    <p class="text-gray-400 mb-4" data-lang-en="Premium tech, fashion & beauty products bringing African innovation to the world" data-lang-fr="Des produits premium de technologie, de mode et de beauté qui apportent l'innovation africaine au monde">Premium tech, fashion & beauty products bringing African innovation to the world</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-lang-en="Quick Links" data-lang-fr="Liens Rapides">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Home" data-lang-fr="Accueil">Home</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Products" data-lang-fr="Produits">Products</a></li>
+                        <li><a href="#reviews" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Reviews" data-lang-fr="Avis">Reviews</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Contact" data-lang-fr="Contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-lang-en="Categories" data-lang-fr="Catégories">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#gadgets" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Gadgets" data-lang-fr="Gadgets">Gadgets</a></li>
+                        <li><a href="#tech" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Tech" data-lang-fr="Technologie">Tech</a></li>
+                        <li><a href="#clothing" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Clothing" data-lang-fr="Vêtements">Clothing</a></li>
+                        <li><a href="#lotions" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Lotions" data-lang-fr="Lotions">Lotions</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-lang-en="Payment Methods" data-lang-fr="Méthodes de Paiement">Payment Methods</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="bg-white text-gray-800 px-3 py-1 rounded text-sm font-medium">PayFast</div>
+                        <div class="bg-white text-gray-800 px-3 py-1 rounded text-sm font-medium">Visa</div>
+                        <div class="bg-white text-gray-800 px-3 py-1 rounded text-sm font-medium">Mastercard</div>
+                        <div class="bg-white text-gray-800 px-3 py-1 rounded text-sm font-medium">EFT</div>
+                    </div>
+                    <p class="text-gray-400 mt-4" data-lang-en="Secure payments via PayFast" data-lang-fr="Paiements sécurisés via PayFast">Secure payments via PayFast</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0" data-lang-en="© 2023 AfriTech Fusion. All rights reserved." data-lang-fr="© 2023 AfriTech Fusion. Tous droits réservés.">© 2023 AfriTech Fusion. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Privacy Policy" data-lang-fr="Politique de Confidentialité">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Terms of Service" data-lang-fr="Conditions d'Utilisation">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" data-lang-en="Shipping Info" data-lang-fr="Informations d'Expédition">Shipping Info</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-cart">&times;</span>
+            <h2 class="text-2xl font-bold mb-6" data-lang-en="Your Cart" data-lang-fr="Votre Panier">Your Cart</h2>
+            
+            <div id="cart-items" class="mb-6">
+                <!-- Cart items will be dynamically added here -->
+                <p class="text-gray-500 italic text-center py-4" data-lang-en="Your cart is empty" data-lang-fr="Votre panier est vide">Your cart is empty</p>
+            </div>
+            
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                <div class="flex justify-between font-semibold mb-4">
+                    <span data-lang-en="Total:" data-lang-fr="Total :">Total:</span>
+                    <span id="cart-total">R0.00</span>
+                </div>
+                
+                <button id="checkout-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg transition duration-300 flex items-center justify-center" data-lang-en="Checkout with PayFast" data-lang-fr="Payer avec PayFast">
+                    Checkout with PayFast
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                
+                <button id="continue-shopping" class="w-full mt-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 py-2 rounded-lg transition duration-300" data-lang-en="Continue Shopping" data-lang-fr="Continuer vos Achats">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // --- CART FUNCTIONALITY ---
+    const cartIcon = document.getElementById('cart-icon');
+    const cartModal = document.getElementById('cart-modal');
+    const cartCount = document.querySelector('.cart-count');
+    const cartItemsDiv = document.getElementById('cart-items');
+    const cartTotalSpan = document.getElementById('cart-total');
+    let cart = [];
+
+    // Helper: Get product info from button
+    function getProductInfo(btn) {
+        return {
+            id: btn.getAttribute('data-id'),
+            name: btn.getAttribute('data-name'),
+            price: parseInt(btn.getAttribute('data-price'), 10),
+            qty: 1
+        };
+    }
+
+    // Add to cart
+    function addToCartHandler(e) {
+        const prod = getProductInfo(this);
+        const found = cart.find(item => item.id === prod.id);
+        if (found) {
+            found.qty++;
+        } else {
+            cart.push(prod);
+        }
+        updateCartCount();
+        updateCartModal();
+    }
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.removeEventListener('click', addToCartHandler); // Prevent double binding
+        btn.addEventListener('click', addToCartHandler);
+    });
+
+    // Update cart count
+    function updateCartCount() {
+        let total = cart.reduce((sum, item) => sum + item.qty, 0);
+        cartCount.textContent = total;
+    }
+
+    // Show cart modal
+    cartIcon.addEventListener('click', function() {
+        updateCartModal();
+        cartModal.style.display = 'block';
+    });
+
+    // Hide cart modal on outside click
+    cartModal.addEventListener('click', function(e) {
+        if (e.target === cartModal) cartModal.style.display = 'none';
+    });
+
+    // Close modal with X button
+    const closeCartBtn = document.getElementById('close-cart');
+    if (closeCartBtn) {
+        closeCartBtn.onclick = function() {
+            cartModal.style.display = 'none';
+        };
+    }
+
+    // Continue shopping button
+    function continueShoppingHandler() {
+        cartModal.style.display = 'none';
+    }
+    const continueShoppingBtn = document.getElementById('continue-shopping');
+    if (continueShoppingBtn) {
+        continueShoppingBtn.onclick = continueShoppingHandler;
+    }
+
+    // Remove item from cart
+    function removeCartItem(idx) {
+        cart.splice(idx, 1);
+        updateCartCount();
+        updateCartModal();
+    }
+
+    // Update cart modal content (cart items and total)
+    function updateCartModal() {
+        if (!cartItemsDiv) return;
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p class="text-gray-500 italic text-center py-4" data-lang-en="Your cart is empty" data-lang-fr="Votre panier est vide">Your cart is empty</p>';
+            cartTotalSpan.textContent = 'R0.00';
+        } else {
+            let html = '<ul>';
+            cart.forEach((item, idx) => {
+                html += `<li class='flex justify-between items-center mb-3'>
+                    <span>${item.name} <span class='text-gray-400'>x${item.qty}</span></span>
+                    <span>R${item.price * item.qty}</span>
+                    <button class='remove-item text-red-500 ml-4' data-idx='${idx}' title='Remove'>&times;</button>
+                </li>`;
+            });
+            html += '</ul>';
+            cartItemsDiv.innerHTML = html;
+            cartTotalSpan.textContent = 'R' + cart.reduce((sum, i) => sum + i.price * i.qty, 0) + '.00';
+            // Bind remove buttons
+            cartItemsDiv.querySelectorAll('.remove-item').forEach(btn => {
+                btn.onclick = function() {
+                    removeCartItem(parseInt(this.getAttribute('data-idx')));
+                };
+            });
+        }
+    }
+
+    // Checkout button
+    function checkoutHandler() {
+        // Show thank you message and reset cart
+        if (!cartItemsDiv) return;
+        let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        cartItemsDiv.innerHTML = `<div class='text-center py-8'>
+            <h3 class='text-xl font-bold mb-4' data-lang-en='Thank you for your purchase!' data-lang-fr='Merci pour votre achat !'>Thank you for your purchase!</h3>
+            <div class='mb-2' data-lang-en='Order Total:' data-lang-fr='Total de la commande:'>Order Total: <b>R${total}.00</b></div>
+            <button id='close-checkout' class='mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg'>Close</button>
+        </div>`;
+        cartTotalSpan.textContent = 'R0.00';
+        cart = [];
+        updateCartCount();
+        // Hide modal on close
+        setTimeout(() => {
+            const closeCheckoutBtn = document.getElementById('close-checkout');
+            if (closeCheckoutBtn) {
+                closeCheckoutBtn.onclick = function() {
+                    cartModal.style.display = 'none';
+                    updateCartModal();
+                };
+            }
+        }, 100);
+    }
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.onclick = checkoutHandler;
+    }
+
+    // Re-bind modal buttons after every modal open
+    function rebindModalButtons() {
+        const closeCartBtn = document.getElementById('close-cart');
+        if (closeCartBtn) closeCartBtn.onclick = function() { cartModal.style.display = 'none'; };
+        const continueShoppingBtn = document.getElementById('continue-shopping');
+        if (continueShoppingBtn) continueShoppingBtn.onclick = continueShoppingHandler;
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (checkoutBtn) checkoutBtn.onclick = checkoutHandler;
+    }
+
+    // Always rebind after modal is shown
+    cartIcon.addEventListener('click', rebindModalButtons);
+
+    // --- PRODUCT IMAGE FALLBACK ---
+    document.querySelectorAll('img').forEach(img => {
+        img.onerror = function() {
+            this.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
+        };
+    });
+    </script>
+</body>
+</html>
